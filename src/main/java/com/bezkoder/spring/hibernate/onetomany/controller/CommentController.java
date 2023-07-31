@@ -2,6 +2,7 @@ package com.bezkoder.spring.hibernate.onetomany.controller;
 
 import java.util.List;
 
+import com.bezkoder.spring.hibernate.onetomany.model.CommentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,11 +43,21 @@ public class CommentController {
   }
 
   @GetMapping("/comments/{id}")
-  public ResponseEntity<Comment> getCommentsByTutorialId(@PathVariable(value = "id") Long id) {
+  public ResponseEntity<CommentResponse> getCommentsByTutorialId(@PathVariable(value = "id") Long id) {
     Comment comment = commentRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("Not found Comment with id = " + id));
+    CommentResponse response = new CommentResponse();
+    response.setId(comment.getId());
+    response.setContent(comment.getContent());
 
-    return new ResponseEntity<>(comment, HttpStatus.OK);
+    CommentResponse.Tutorial tutorial = new CommentResponse.Tutorial();
+    tutorial.setId(comment.getTutorial().getId());
+    tutorial.setTitle(comment.getTutorial().getTitle());
+    tutorial.setDescription(comment.getTutorial().getDescription());
+    tutorial.setPublished(comment.getTutorial().isPublished());
+
+    response.setTutorial(tutorial);
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   @PostMapping("/tutorials/{tutorialId}/comments")

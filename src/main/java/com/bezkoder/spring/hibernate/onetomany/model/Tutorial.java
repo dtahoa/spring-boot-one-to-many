@@ -1,6 +1,6 @@
 package com.bezkoder.spring.hibernate.onetomany.model;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "tutorials")
